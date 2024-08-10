@@ -1,0 +1,10 @@
+---
+- name: Ensure directory .ssh exists
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/.ssh"
+    state: directory
+    mode: '0700'
+
+- name: Generate an OpenSSH keypair
+  community.crypto.openssh_keypair:
+    path: "{{ playbook_dir }}/.ssh/id_{{ cluster_name }}"

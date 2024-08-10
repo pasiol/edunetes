@@ -1,0 +1,57 @@
+---
+- name: Open control plane ports
+  become: true
+  notify: Reload UFW
+  with_items: "{{ cluster_control_plane_init_allowed_ports }}"
+  community.general.ufw:
+    rule: allow
+    state: enabled
+    port: "{{ item | split('/') | first | string }}"
+    proto: "{{ item | split('/') | last | string }}"
+
+- name: Check is first control plane responsing
+  register: response
+  ignore_errors: true
+  ansible.builtin.uri:
+    url: https://{{ cluster_control_plane_init_first_control_plane.ipv4 | split('/') | first }}:6443
+    return_content: true
+    validate_certs: false
+
+- name: Set up first control plane
+  become: true
+  register: result
+  when: response.status!=403
+  changed_when: true
+  ansible.builtin.command:
+    cmd: >
+      kubeadm init --kubernetes-version=v"{{ kubernetes_version }}" --pod-network-cidr=10.244.0.0/16
+
+- name: Fetch cluster config
+  become: true
+  register: slurpfile
+  ansible.builtin.slurp:
+    src: /etc/kubernetes/admin.conf
+
+- name: Ensure .kube directory exists
+  delegate_to: kvm_host_local
+  connection: local
+  ansible.builtin.file:
+    path: ~/.kube
+    state: directory
+    mode: "0700"
+
+- name: Create local kubernetes config
+  delegate_to: kvm_host_local
+  connection: local
+  ansible.builtin.copy:
+    content: "{{ slurpfile.content | b64decode }}"
+    dest: ~/.kube/config
+    mode: "0500"
+
+- name: Apply kube-flannel yaml
+  delegate_to: kvm_host_local
+  connection: local
+  changed_when: true
+  ansible.builtin.command:
+    cmd: >
+      /usr/bin/kubectl apply -f {{ playbook_dir }}/files/flannel.yaml

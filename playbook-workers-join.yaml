@@ -1,0 +1,7 @@
+---
+- name: Join worker(s) to cluster
+  hosts: workers
+  roles:
+    - cluster_workers_join
+  vars:
+    ansible_user: kubeadmin

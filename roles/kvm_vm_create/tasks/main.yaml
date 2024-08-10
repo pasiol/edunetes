@@ -1,0 +1,62 @@
+---
+- name: Generating the SSH-key for Ansible
+  ansible.builtin.include_tasks: generate_ssh_key.yaml
+
+- name: Run and echo qemu validate
+  when: ansible_os_family == "Debian"
+  block:
+
+    - name: Run virt-host-validate
+      become: true
+      register: output
+      changed_when: false
+      ignore_errors: true
+      ansible.builtin.command:
+        virt-host-validate qemu
+
+    - name: Echo output
+      ansible.builtin.debug:
+        msg: "{{ output.stdout_lines }}"
+
+- name: Include task create network
+  ansible.builtin.include_tasks: create_network.yaml
+
+- name: Get VMs list
+  become: true
+  register: existing_vms
+  changed_when: false
+  community.libvirt.virt:
+    command: list_vms
+
+- name: Check is base image present
+  become: true
+  register: stat_result
+  ansible.builtin.stat:
+    path: "{{ image_pool_dir }}/{{ base_image_name }}"
+
+- name: Download base image
+  become_user: root
+  become: true
+  register: base_image
+  when: not stat_result.stat.exists
+  ansible.builtin.get_url:
+    url: "{{ base_image_url }}"
+    dest: "{{ image_pool_dir }}/{{ base_image_name }}"
+    checksum: "{{ base_image_checksum }}"
+    mode: "0700"
+
+- name: Create the master vms
+  vars:
+    vm_name: "{{ item.name }}{{ cluster_name }}"
+  loop: "{{ masters }}"
+  ansible.builtin.include_tasks: create_node.yaml
+
+- name: Create the worker vms
+  vars:
+    vm_name: "{{ item.name }}{{ inventory_hostname }}"
+  loop: "{{ workers }}"
+  ansible.builtin.include_tasks: create_node.yaml
+
+- name: Wait for VMs to finish installing
+  ansible.builtin.wait_for:
+    timeout: 360

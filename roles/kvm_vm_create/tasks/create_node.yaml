@@ -1,0 +1,67 @@
+---
+- name: Ensure directory exists
+  become_user: root
+  become: true
+  ansible.builtin.file:
+    path: "{{ item.pool_home }}"
+    state: directory
+    mode: '0750'
+    owner: libvirt-qemu
+    group: kvm
+
+- name: Create VM image from base
+  become_user: root
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ item.pool_home }}/image_{{ item.name }}.img"
+    src: "{{ image_pool_dir }}/{{ base_image_name }}"
+    mode: "0755"
+  register: copy_results
+
+- name: Create user data from template
+  become_user: root
+  become: true
+  ansible.builtin.template:
+    src: user-data.yaml.j2
+    dest: "{{ item.pool_home }}/{{ item.name }}-user-data.yaml"
+    mode: 0644
+
+- name: Create network config from template
+  become_user: root
+  become: true
+  ansible.builtin.template:
+    src: network_config_static.cfg.j2
+    dest: "{{ item.pool_home }}/{{ item.name }}-network_config_static.cfg"
+    mode: 0644
+
+- name: Resize the image
+  become_user: root
+  become: true
+  ansible.builtin.command: |
+    qemu-img resize "{{ item.pool_home }}/image_{{ item.name }}.img" "{{ item.disk_size }}"
+  changed_when: true
+
+- name: Create cloud init disk
+  become_user: root
+  become: true
+  ansible.builtin.command: |
+    cloud-localds -v --network-config="{{ item.pool_home }}/{{ item.name }}-network_config_static.cfg" \
+    "{{ item.pool_home }}/image_{{ item.name }}_seed.img" "{{ item.pool_home }}/{{ item.name }}-user-data.yaml"
+  changed_when: true
+
+- name: Create the VM
+  become_user: root
+  become: true
+  ansible.builtin.command: |
+    virt-install \
+    --name {{ item.name }} \
+    --memory {{ item.ram_mb }} \
+    --vcpus {{ item.vcpus }} \
+    --disk "{{ item.pool_home }}/image_{{ item.name }}.img",device=disk,bus=virtio \
+    --disk "{{ item.pool_home }}/image_{{ item.name }}_seed.img",readonly=on \
+    --import \
+    --os-variant debian11 \
+    --graphics none \
+    --noautoconsole \
+    --network bridge="virbr-{{ cluster_name }}"
+  changed_when: true

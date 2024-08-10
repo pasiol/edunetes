@@ -1,0 +1,8 @@
+---
+- name: Ensure master node on hosts file
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: "^{{ item.ipv4 | split('/') | first }}"
+    state: present
+    line: "{{ item.ipv4 | split('/') | first }} {{ item.name }} {{ item.name }}.{{ cluster_name }}.local"

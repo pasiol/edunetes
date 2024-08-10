@@ -1,0 +1,29 @@
+---
+# todo: remove seed disks
+- name: Take a snapshot masters
+  become_user: root
+  become: true
+  changed_when: true
+  register: result
+  with_items:
+    "{{ masters }}"
+  ansible.builtin.command:
+    cmd: >
+      virsh snapshot-create-as
+      --domain {{ item.name }}
+      --name "{{ kvm_snapshot_create_name }}"
+      --description "{{ kvm_snapshot_create_description }}"
+
+- name: Take a snapshot workers
+  become_user: root
+  become: true
+  changed_when: true
+  register: result
+  with_items:
+    "{{ workers }}"
+  ansible.builtin.command:
+    cmd: >
+      virsh snapshot-create-as
+      --domain {{ item.name }}
+      --name "{{ kvm_snapshot_create_name }}"
+      --description "{{ kvm_snapshot_create_description }}"

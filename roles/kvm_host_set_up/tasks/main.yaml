@@ -1,0 +1,81 @@
+---
+- name: Include OS specific KVM packages
+  ansible.builtin.include_vars:
+    "{{ ansible_os_family | lower }}.yaml"
+
+- name: Install KVM packages
+  become: true
+  register: result
+  with_items: "{{ kvm_host_set_up_packages }}"
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+
+- name: Set swappiness 5
+  ansible.posix.sysctl:
+    name: vm.swappiness
+    value: "5"
+  become: true
+
+- name: Define swappiness in sysctl.conf
+  become: true
+  ansible.builtin.lineinfile:
+    dest: /etc/sysctl.conf
+    line: vm.swappiness=5
+    regexp: ^vm.swappiness
+    state: present
+
+- name: Enable IOMMU
+  become: true
+  notify: Grub mkconfig
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX="((?:(?!intel_iommu=on).)*?)"$'
+    line: 'GRUB_CMDLINE_LINUX="\1 intel_iommu=on"'
+    backup: true
+    backrefs: true
+
+- name: Include task hosts file
+  with_items:
+    - "{{ masters }}"
+    - "{{ workers }}"
+  ansible.builtin.include_tasks:
+    file: hosts_file.yaml
+
+- name: Ansible check file exists
+  register: key
+  ansible.builtin.stat:
+    path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+- name: Get release key # noqa risky-shell-pipe command-instead-of-module
+  become: true
+  changed_when: true
+  when: "not key.stat.exists"
+  ansible.builtin.shell: |
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key |
+    gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+- name: Ansible check file exists
+  register: source
+  ansible.builtin.stat:
+    path: /etc/apt/sources.list.d/kubernetes.list
+
+- name: Add repository # noqa risky-shell-pipe command-instead-of-module
+  become: true
+  changed_when: true
+  when: "not source.stat.exists"
+  ansible.builtin.shell: |
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' |
+    tee /etc/apt/sources.list.d/kubernetes.list
+
+- name: Install kubernetes packages to all nodes
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    name: "kubectl={{ kubernetes_package_version }}"
+
+- name: Freeze kubernetes packages # noqa command-instead-of-module
+  become: true
+  changed_when: true
+  ansible.builtin.command: >
+    apt-mark hold kubectl

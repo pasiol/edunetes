@@ -1,0 +1,13 @@
+---
+kvm_host_set_up_packages:
+  - vim
+  - qemu-system-x86
+  - virtinst
+  - libvirt-daemon-system
+  - libguestfs-tools
+  - python3-libvirt
+  - cloud-image-utils
+  - python3-lxml
+  - virtinst
+  - libvirt-dev
+  - virt-manager

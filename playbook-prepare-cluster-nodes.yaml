@@ -1,0 +1,5 @@
+---
+- name: Create nodes for Kubespray K8S cluster
+  hosts: edunetes
+  roles:
+  - cluster_node_set_up

@@ -1,0 +1,32 @@
+---
+all:
+  hosts:
+    kvm_host_local:
+      ansible_host: 127.0.0.1
+    control-plane01:
+      ansible_host: 192.168.1.11
+    worker01:
+      ansible_host: 192.168.1.21
+    worker02:
+      ansible_host: 192.168.1.22
+    worker03:
+      ansible_host: 192.168.1.23
+  children:
+    kvm:
+      hosts:
+        kvm_host_local:
+    edunetes:
+      hosts:
+        control-plane01:
+        worker01:
+        worker02:
+        worker03:
+    masters:
+      hosts:
+        control-plane01:
+    workers:
+      hosts:
+        worker01:
+        worker02:
+        worker03:
+

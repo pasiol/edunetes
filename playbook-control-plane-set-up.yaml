@@ -1,0 +1,7 @@
+---
+- name: Set up control plane(s)
+  hosts: masters
+  roles:
+    - cluster_control_plane_init
+  vars:
+    ansible_user: kubeadmin
