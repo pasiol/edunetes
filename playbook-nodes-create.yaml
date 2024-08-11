@@ -1,5 +1,5 @@
 ---
-- name: Create nodes for Kubespray K8S cluster
+- name: Create nodes for Edunetes K8S cluster
   hosts: kvm_host_local
   roles:
   - kvm_vm_create
