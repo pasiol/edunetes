@@ -1,14 +1,4 @@
 ---
-- name: Open worker ports
-  become: true
-  notify: Reload UFW
-  with_items: "{{ cluster_workers_join_allowed_ports }}"
-  community.general.ufw:
-    rule: allow
-    state: enabled
-    port: "{{ item | split('/') | first | string }}"
-    proto: "{{ item | split('/') | last | string }}"
-
 # TODO: check is worker already joined
 
 - name: Get join command

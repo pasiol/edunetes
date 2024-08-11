@@ -1,5 +1,6 @@
 ---
-- name: Reload UFW
+- name: Reload sysctl settings
   become: true
-  community.general.ufw:
-    state: reloaded
+  changed_when: true
+  ansible.builtin.command:
+    sysctl --system

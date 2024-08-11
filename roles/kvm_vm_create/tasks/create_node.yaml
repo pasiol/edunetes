@@ -10,13 +10,11 @@
     group: kvm
 
 - name: Create VM image from base
+  delegate_to: localhost
   become_user: root
   become: true
-  ansible.builtin.copy:
-    dest: "{{ item.pool_home }}/image_{{ item.name }}.img"
-    src: "{{ image_pool_dir }}/{{ base_image_name }}"
-    mode: "0755"
-  register: copy_results
+  ansible.builtin.command:
+    cp {{ image_pool_dir }}/{{ base_image_name }} {{ item.pool_home }}/image_{{ item.name }}.img
 
 - name: Create user data from template
   become_user: root

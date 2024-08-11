@@ -1,14 +1,4 @@
 ---
-- name: Open control plane ports
-  become: true
-  notify: Reload UFW
-  with_items: "{{ cluster_control_plane_init_allowed_ports }}"
-  community.general.ufw:
-    rule: allow
-    state: enabled
-    port: "{{ item | split('/') | first | string }}"
-    proto: "{{ item | split('/') | last | string }}"
-
 - name: Check is first control plane responsing
   register: response
   ignore_errors: true
@@ -24,7 +14,7 @@
   changed_when: true
   ansible.builtin.command:
     cmd: >
-      kubeadm init --kubernetes-version=v"{{ kubernetes_version }}" --pod-network-cidr=10.244.0.0/16
+      kubeadm init --kubernetes-version=v"{{ kubernetes_minor_version }}" --pod-network-cidr=10.244.0.0/16
 
 - name: Fetch cluster config
   become: true
@@ -46,12 +36,20 @@
   ansible.builtin.copy:
     content: "{{ slurpfile.content | b64decode }}"
     dest: ~/.kube/config
-    mode: "0500"
+    mode: "0700"
 
-- name: Apply kube-flannel yaml
+- name: Apply calico.yaml
   delegate_to: kvm_host_local
   connection: local
   changed_when: true
   ansible.builtin.command:
     cmd: >
-      /usr/bin/kubectl apply -f {{ playbook_dir }}/files/flannel.yaml
+      /usr/bin/kubectl apply -f {{ playbook_dir }}/files/calico.yaml
+
+- name: Apply local-path-storage.yaml
+  delegate_to: kvm_host_local
+  connection: local
+  changed_when: true
+  ansible.builtin.command:
+    cmd: >
+      /usr/bin/kubectl apply -f {{ playbook_dir }}/files/local-path-storage.yaml

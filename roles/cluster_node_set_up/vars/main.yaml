@@ -6,12 +6,8 @@ set_up_kubernetes_node_packages:
   - software-properties-common
   - apt-transport-https
   - ca-certificates
-  - podman
 
 set_up_kubernetes_node_kubernetes_packages:
   - kubelet
   - kubeadm
   - kubectl
-
-set_up_kubernetes_node_version_splitted: "{{ version | split('.') | list }}"
-set_up_kubernetes_node_version: "{{ set_up_kubernetes_node_version_splitted[0] }}.{{ set_up_kubernetes_node_version_splitted[1] }}.{{ set_up_kubernetes_node_version_splitted[2] | split('-') | first }}" # noqa: yaml[line-length]
