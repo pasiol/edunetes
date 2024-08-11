@@ -1,5 +1,3 @@
 ansible-lint
 yamllint
 pre-commit
-lxml
-libvirt-python

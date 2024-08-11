@@ -1,8 +1,8 @@
 ---
 kubernetes_package_version: 1.30.3-1.1
-kubernetes_package_version_splitted: "{{ version | split('.') | list }}"
-kubernetes_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1]
-  }}.{{ kubernetes_package_version_splitted[2] | split('-') | first }}"
+kubernetes_package_version_splitted: "{{ kubernetes_package_version | split('.') | list }}"
+kubernetes_minor_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}.{{ kubernetes_package_version_splitted[2] | split('-') | first }}"
+kubernetes_major_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}"
 kvm_host: localhost
 cluster_name: edunetes
 image_pool_dir: /var/lib/libvirt/images
@@ -22,7 +22,7 @@ storage_pools:
   - pool:
       name: pool3
       path: /var/lib/libvirt/filesystems/pool3
-base_image_checksum: # updated 2023-08-29
+base_image_checksum: # updated 2023-07-29
   sha256:cbccd7c4628124278fb427281f33112c60016f3c361c8d5049a68b5411030c04
 base_image_name: jammy-server-cloudimg-amd64-disk-kvm.img
 base_image_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img

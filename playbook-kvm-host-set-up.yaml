@@ -3,6 +3,4 @@
   hosts: kvm_host_local
   roles:
     - kvm_host_set_up
-  vars_files:
-    - group_vars/edunetes/main.yaml
   connection: local

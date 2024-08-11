@@ -1,5 +1,6 @@
 #!/bin/bash
-sudo apt install ansible-core \
+sudo apt install \
+    ansible-core \
     git \
     python3-venv \
     build-essential \

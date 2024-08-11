@@ -1,4 +1,1 @@
 ---
-kvm_snapshot_create_host: "{{ inventory_hostname }}"
-kvm_snapshot_create_name: "k8s_node_prepared"
-kvm_snapshot_create_description: "Node before cluster set up all things installed on it."
