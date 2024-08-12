@@ -1,17 +1,19 @@
 ---
-kubernetes_package_version: 1.30.3-1.1
-kubernetes_package_version_splitted: "{{ kubernetes_package_version | split('.') | list }}"
-kubernetes_minor_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}.{{ kubernetes_package_version_splitted[2] | split('-') | first }}"
-kubernetes_major_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}"
 kvm_host: localhost
-cluster_name: edunetes
 image_pool_dir: /var/lib/libvirt/images
-timezone: Europe/Helsinki
 network:
   domainName: "{{ cluster_name }}.local"
   ipv4Address: 192.168.1.0
   ipv4_gateway: 192.168.1.1
   ipv4_mask: 255.255.255.192
+  lb_address_pool: "192.168.1.30-192.168.1.50"
+kubernetes_package_version: 1.30.3-1.1
+kubernetes_package_version_splitted: "{{ kubernetes_package_version | split('.') | list }}"
+kubernetes_minor_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}.{{ kubernetes_package_version_splitted[2] | split('-') | first }}"
+kubernetes_major_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}"
+cni_plugin: calico
+cluster_name: edunetes
+timezone: Europe/Helsinki
 storage_pools:
   - pool:
       name: pool1

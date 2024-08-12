@@ -38,18 +38,26 @@
     dest: ~/.kube/config
     mode: "0700"
 
-- name: Apply calico.yaml
+- name: Apply CNI plugin
   delegate_to: kvm_host_local
   connection: local
   changed_when: true
   ansible.builtin.command:
     cmd: >
-      /usr/bin/kubectl apply -f {{ playbook_dir }}/files/calico.yaml
+      /usr/bin/kubectl apply -f {{ playbook_dir }}/files/{{ cni_plugin }}.yaml
 
-- name: Apply local-path-storage.yaml
+- name: Apply local-path storage
   delegate_to: kvm_host_local
   connection: local
   changed_when: true
   ansible.builtin.command:
     cmd: >
       /usr/bin/kubectl apply -f {{ playbook_dir }}/files/local-path-storage.yaml
+
+- name: Apply Metallb
+  delegate_to: kvm_host_local
+  connection: local
+  changed_when: true
+  ansible.builtin.command:
+    cmd: >
+      /usr/bin/kubectl apply -f {{ playbook_dir }}/files/metallb-native.yaml
