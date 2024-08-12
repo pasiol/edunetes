@@ -1,9 +1,0 @@
----
-- name: Create nodes for Kubespray K8S cluster
-  hosts: kvm_host_local
-  roles:
-    - kvm_net_start
-    # - kvm_domain_stop
-    - kvm_snapshot_create
-    - kvm_domain_start
-  connection: local

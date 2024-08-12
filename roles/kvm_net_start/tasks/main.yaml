@@ -1,6 +1,0 @@
----
-- name: Ensure that a network is active
-  become: true
-  community.libvirt.virt_net:
-    state: active
-    name: virbr-edunetes

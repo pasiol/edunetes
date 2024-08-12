@@ -1,6 +1,0 @@
----
-- name: Stop a VM
-  become: true
-  community.libvirt.virt:
-    name: "{{ inventory_hostname }}"
-    state: shutdown
