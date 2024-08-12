@@ -55,6 +55,6 @@ workers:
     ipv4: 192.168.1.23/26
     name: worker03
     network_name: virbr-{{ cluster_name }}
-    pool_home: /var/lib/libvirt/filesystems/worker04
+    pool_home: /var/lib/libvirt/filesystems/worker03
     ram_mb: 4096
     vcpus: 2
