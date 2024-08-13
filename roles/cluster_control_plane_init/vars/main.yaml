@@ -6,5 +6,5 @@ cluster_control_plane_init_allowed_ports:
   - "10259/tcp"
   - "10257/tcp"
 
-cluster_control_plane_init_first_control_plane: "{{ masters | first }}"
+cluster_control_plane_init_first_control_plane: "{{ control_planes | first }}"
 # TODO: cluster_control_plane_set_up_other_control_planes:

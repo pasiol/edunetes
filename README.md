@@ -1,6 +1,6 @@
 # Edunetes - Kubernetes self-study environment on the Ubuntu 22.04 laptop
 
-Run the latest Vanilla Kubernetes release on your Linux laptop.
+Run the latest release of Vanilla Kubernetes on your Linux laptop.
 
 ## Cluster configuration
 
@@ -25,7 +25,6 @@ Configure a Kubernetes cluster on the nodes.
 - KVM host on Ubuntu 22.04
 - Python 3.10 virtual environment
 - modern multithread laptop 16gb memory for 2 nodes, 32gb memory for 4 nodes
-- one control plane is supported
 
 Prepare KVM host running the following commands.
 
@@ -38,5 +37,11 @@ Prepare KVM host running the following commands.
     ansible-galaxy install -r requirements.yaml
     ansible-playbook playbook-kvm-host-set-up.yaml -K
 
+## Features
+
+- Vanilla Kubernetes from pkgs.k8s.io repository
+- Flannel or Calico CNI plugin
+- MetalLB loadbalander
+- one control plane and multiple worker nodes
 
 Under development, on the Alpha stage

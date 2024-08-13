@@ -1,0 +1,8 @@
+---
+- name: Finalize cluster configuration
+  hosts: kvm_host_local
+  roles:
+    - cluster_finalize
+  connection: local
+  vars:
+    ansible_user: kubeadmin

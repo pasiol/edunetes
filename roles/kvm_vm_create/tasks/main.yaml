@@ -48,7 +48,7 @@
 - name: Create the master vms
   vars:
     vm_name: "{{ item.name }}{{ cluster_name }}"
-  loop: "{{ masters }}"
+  loop: "{{ control_planes }}"
   ansible.builtin.include_tasks: create_node.yaml
 
 - name: Create the worker vms

@@ -37,7 +37,7 @@
 
 - name: Include task hosts file
   with_items:
-    - "{{ masters }}"
+    - "{{ control_planes }}"
     - "{{ workers }}"
   ansible.builtin.include_tasks:
     file: hosts_file.yaml
@@ -52,7 +52,7 @@
   changed_when: true
   when: "not key.stat.exists"
   ansible.builtin.shell: |
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key |
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_major_version }}/deb/Release.key |
     gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
 - name: Ansible check file exists
@@ -65,17 +65,30 @@
   changed_when: true
   when: "not source.stat.exists"
   ansible.builtin.shell: |
-    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' |
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_major_version }}/deb/ /' |
     tee /etc/apt/sources.list.d/kubernetes.list
 
-- name: Install kubernetes packages to all nodes
+- name: Unhold kubernetes packages # noqa command-instead-of-module
+  become: true
+  changed_when: true
+  ansible.builtin.command: >
+    apt-mark unhold kubectl
+
+- name: Install kubernetes packages to all nodes # TODO: remove other versions
   become: true
   ansible.builtin.apt:
     update_cache: true
     name: "kubectl={{ kubernetes_package_version }}"
 
-- name: Freeze kubernetes packages # noqa command-instead-of-module
+- name: Hold kubernetes packages # noqa command-instead-of-module
   become: true
   changed_when: true
   ansible.builtin.command: >
     apt-mark hold kubectl
+
+- name: Set kubectl autocompletion
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    state: present
+    regexp: "^source <(kubectl completion bash)"
+    line: source <(kubectl completion bash)

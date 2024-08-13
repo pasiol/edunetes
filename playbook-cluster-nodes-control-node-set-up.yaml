@@ -1,6 +1,6 @@
 ---
 - name: Set up control plane(s)
-  hosts: masters
+  hosts: control_planes
   roles:
     - cluster_control_plane_init
   vars:

@@ -4,4 +4,4 @@ cluster_workers_join_allowed_ports:
   - "10256/tcp"
   - "30000:32767/tcp"
 
-cluster_workers_join_first_control_plane: "{{ masters | first }}"
+cluster_workers_join_first_control_plane: "{{ control_planes | first }}"

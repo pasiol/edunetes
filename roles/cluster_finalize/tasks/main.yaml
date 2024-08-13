@@ -1,0 +1,17 @@
+---
+- name: Template address pool
+  delegate_to: kvm_host_local
+  connection: local
+  ansible.builtin.template:
+    src: metallb-address-pool.yaml.j2
+    dest: /tmp/metallb-address-pool.yaml
+    mode: "0700"
+
+- name: Apply address pool
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
+  kubernetes.core.k8s:
+    state: present
+    src: /tmp/metallb-address-pool.yaml

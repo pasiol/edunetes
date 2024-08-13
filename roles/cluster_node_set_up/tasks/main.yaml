@@ -16,7 +16,7 @@
 
 - name: Include task hosts file
   with_items:
-    - "{{ masters }}"
+    - "{{ control_planes }}"
     - "{{ workers }}"
   ansible.builtin.include_tasks:
     file: hosts_file.yaml

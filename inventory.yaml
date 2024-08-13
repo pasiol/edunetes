@@ -21,7 +21,7 @@ all:
         worker01:
         worker02:
         worker03:
-    masters:
+    control_planes:
       hosts:
         control-plane01:
     workers:
