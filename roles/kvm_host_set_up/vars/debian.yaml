@@ -11,3 +11,4 @@ kvm_host_set_up_packages:
   - virtinst
   - libvirt-dev
   - virt-manager
+  - bash-completion
