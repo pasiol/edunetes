@@ -1,6 +1,10 @@
 ---
 - name: Update packages # TODO: Create own role for upgrade
   become: true
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
   ansible.builtin.apt:
     name: "*"
     update_cache: true
@@ -9,6 +13,10 @@
 
 - name: Install common packages to all nodes
   become: true
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
   with_items:
     - "{{ set_up_kubernetes_node_packages }}"
   ansible.builtin.package:
@@ -21,7 +29,7 @@
   ansible.builtin.include_tasks:
     file: hosts_file.yaml
 
-- name: Disbale firewall is no need behind
+- name: Disbale firewall is no need behind nat
   become: true
   community.general.ufw:
     state: disabled
@@ -139,6 +147,10 @@
 
 - name: Install kubernetes packages to all nodes
   become: true
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
   with_items:
     - "{{ set_up_kubernetes_node_kubernetes_packages }}"
   ansible.builtin.apt:
@@ -155,6 +167,10 @@
 
 - name: Install containerd package
   become: true
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
   ansible.builtin.apt:
     name: containerd
 
@@ -200,6 +216,9 @@
 - name: Pull images on host
   become: true
   changed_when: true
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
   ansible.builtin.command:
     "kubeadm config images pull --kubernetes-version=v{{ kubernetes_minor_version }}"
-
