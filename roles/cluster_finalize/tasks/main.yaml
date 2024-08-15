@@ -1,4 +1,13 @@
 ---
+- name: Apply  local-path storage
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ role_path }}/files/local-path-storage.yaml"
+
 - name: Template address pool
   delegate_to: kvm_host_local
   connection: local
@@ -14,7 +23,7 @@
   delay: 10
   kubernetes.core.k8s:
     state: present
-    src: /tmp/metallb-address-pool.yaml
+    src: "/tmp/metallb-address-pool.yaml"
 
 - name: Apply metrics server
   register: result
@@ -23,4 +32,4 @@
   delay: 10
   kubernetes.core.k8s:
     state: present
-    src: /tmp/metrics-server.yaml
+    src: "{{ role_path }}/files/metrics-server.yaml"
