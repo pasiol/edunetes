@@ -141,8 +141,9 @@
   become: true
   changed_when: true
   when: "not source.stat.exists"
-  ansible.builtin.shell: |
-    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v"{{ kubernetes_major_version }}"/deb/ /' |
+  ansible.builtin.shell: >
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg]
+    https://pkgs.k8s.io/core:/stable:/v"{{ kubernetes_major_version }}"/deb/ /' |
     tee /etc/apt/sources.list.d/kubernetes.list
 
 - name: Install kubernetes packages to all nodes
@@ -185,6 +186,7 @@
     group: root
 
 - name: Generate containerd config
+  changed_when: true
   ansible.builtin.shell:
     /usr/bin/containerd config default > /home/kubeadmin/config.toml
 

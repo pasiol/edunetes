@@ -9,7 +9,10 @@ network:
   lb_address_pool: "192.168.1.30-192.168.1.50"
 kubernetes_package_version: 1.30.4-1.1
 kubernetes_package_version_splitted: "{{ kubernetes_package_version | split('.') | list }}"
-kubernetes_minor_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}.{{ kubernetes_package_version_splitted[2] | split('-') | first }}"
+kubernetes_minor_version: >
+  "{{ kubernetes_package_version_splitted[0] }}.
+  {{ kubernetes_package_version_splitted[1] }}.
+  {{ kubernetes_package_version_splitted[2] | split('-') | first }}"
 kubernetes_major_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}"
 cni_plugin: flannel
 cluster_name: edunetes

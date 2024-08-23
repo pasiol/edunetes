@@ -13,6 +13,7 @@
   delegate_to: localhost
   become_user: root
   become: true
+  changed_when: true
   ansible.builtin.command:
     cp {{ image_pool_dir }}/{{ base_image_name }} {{ item.pool_home }}/image_{{ item.name }}.img
 
