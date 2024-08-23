@@ -17,4 +17,4 @@ rules:
     min-spaces-from-content: 1
 
 ignore: |
-  files/**/*.yaml
+  **/files/**/*.yaml

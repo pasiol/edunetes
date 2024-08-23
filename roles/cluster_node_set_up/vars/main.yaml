@@ -1,5 +1,5 @@
 ---
-set_up_kubernetes_node_packages:
+cluster_node_set_up_kubernetes_node_packages:
   - curl
   - apt-transport-https
   - vim
@@ -7,7 +7,7 @@ set_up_kubernetes_node_packages:
   - apt-transport-https
   - ca-certificates
 
-set_up_kubernetes_node_kubernetes_packages:
+cluster_node_set_up_kubernetes_node_kubernetes_packages:
   - kubelet
   - kubeadm
   - kubectl
