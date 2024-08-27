@@ -25,6 +25,15 @@
     state: present
     src: "/tmp/metallb-address-pool.yaml"
 
+- name: Apply layer 2 advertisement
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ role_path }}/files/l2-advertisement.yaml"
+
 - name: Apply metrics server
   register: result
   until: result is not failed
