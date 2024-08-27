@@ -16,7 +16,7 @@
     namespace: kube-system
     state: present
 
-- name: Create a Service object from an inline definition
+- name: Create CRB for headlamp-admin
   kubernetes.core.k8s:
     state: present
     definition:
@@ -32,3 +32,25 @@
         apiGroup: rbac.authorization.k8s.io
         kind: ClusterRole
         name: cluster-admin
+
+- name: Patch service type to LoadBalancer
+  kubernetes.core.k8s_json_patch:
+    kind: Service
+    namespace: kube-system
+    name: headlamp
+    patch:
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/annotations
+        value: {}
+      - op: add
+        path: /metadata/annotations/metallb.universe.tf~1address-pool
+        value: {}
+      - op: replace
+        path: /metadata/annotations/metallb.universe.tf~1address-pool
+        value: services-pool
+      - op: add
+        path: /spec/loadBalancerIP
+        value: "{{ options.headlamp.ipv4 }}"
