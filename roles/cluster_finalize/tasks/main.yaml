@@ -33,3 +33,8 @@
   kubernetes.core.k8s:
     state: present
     src: "{{ role_path }}/files/metrics-server.yaml"
+
+- name: Iclude task Headlamp
+  when: options.headlamp
+  ansible.builtin.include_tasks:
+    file: headlamp.yaml

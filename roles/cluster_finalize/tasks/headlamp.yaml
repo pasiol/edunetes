@@ -1,0 +1,34 @@
+---
+- name: Apply headlamp
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ role_path }}/files/kubernetes-headlamp.yaml"
+
+- name: Create a searvice account for headlamp
+  kubernetes.core.k8s:
+    name: headlamp-admin
+    api_version: v1
+    kind: ServiceAccount
+    namespace: kube-system
+    state: present
+
+- name: Create a Service object from an inline definition
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: headlamp-admin
+      subjects:
+        - kind: ServiceAccount
+          name: headlamp-admin
+          namespace: kube-system
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cluster-admin

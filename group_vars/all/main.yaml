@@ -19,6 +19,8 @@ kubernetes_major_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kuber
 cni_plugin: flannel
 cluster_name: edunetes
 timezone: Europe/Helsinki
+options:
+  headlamp: true
 storage_pools:
   - pool:
       name: pool1
