@@ -1,0 +1,56 @@
+---
+- name: Apply headlamp
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 10
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ role_path }}/files/kubernetes-headlamp.yaml"
+
+- name: Create a searvice account for headlamp
+  kubernetes.core.k8s:
+    name: headlamp-admin
+    api_version: v1
+    kind: ServiceAccount
+    namespace: kube-system
+    state: present
+
+- name: Create CRB for headlamp-admin
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: headlamp-admin
+      subjects:
+        - kind: ServiceAccount
+          name: headlamp-admin
+          namespace: kube-system
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cluster-admin
+
+- name: Patch service type to LoadBalancer
+  kubernetes.core.k8s_json_patch:
+    kind: Service
+    namespace: kube-system
+    name: headlamp
+    patch:
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/annotations
+        value: {}
+      - op: add
+        path: /metadata/annotations/metallb.universe.tf~1address-pool
+        value: {}
+      - op: replace
+        path: /metadata/annotations/metallb.universe.tf~1address-pool
+        value: services-pool
+      - op: add
+        path: /spec/loadBalancerIP
+        value: "{{ options.headlamp.ipv4 }}"
