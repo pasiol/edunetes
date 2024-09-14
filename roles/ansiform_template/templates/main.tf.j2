@@ -12,11 +12,9 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# resource "libvirt_pool" "node_image" {
-#   name = "default"
-#   type = "dir"
-#   path = "{{ image_pool_dir }}"
-# }
+locals {
+  cluster = yamldecode(file("${path.module}/../group_vars/all/nodes.yaml"))
+}
 
 resource "libvirt_cloudinit_disk" "commoninit" {
   name = "commoninit.iso"
@@ -31,7 +29,7 @@ data "template_file" "user_data" {
 resource "libvirt_network" "virbr-edunetes" {
   name      = "virbr-edunetes"
   mode      = "nat"
-  domain    = "{{ network.domainName }}"
+  domain    = "{{ network.domain_name }}"
   addresses = ["{{ network.cidr_address }}"]
   dns {
     enabled = true

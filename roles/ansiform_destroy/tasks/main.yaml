@@ -1,7 +1,7 @@
 ---
-- name: Plan terraform
+- name: Destroy terraform
+  become: true
   community.general.terraform:
     project_path: "{{ playbook_dir }}/.tf"
-    state: planned
-    plan_file: edunetes-plan
+    state: absent
     force_init: true

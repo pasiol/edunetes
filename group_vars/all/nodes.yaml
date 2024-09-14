@@ -9,18 +9,18 @@ nodes:
   - name: worker-01
     type: worker
     disk_size_in_gb: 30
-    ipv4: 192.168.1.21/26
+    ipv4: 192.168.1.21
     ram_mb: 4096
     vcpus: 2
   - name: worker-02
     type: worker
     disk_size_in_gb: 30
-    ipv4: 192.168.1.22/26
+    ipv4: 192.168.1.22
     ram_mb: 4096
     vcpus: 2
   - name: worker-03
     type: worker
     disk_size_in_gb: 30
-    ipv4: 192.168.1.23/26
+    ipv4: 192.168.1.23
     ram_mb: 4096
     vcpus: 2

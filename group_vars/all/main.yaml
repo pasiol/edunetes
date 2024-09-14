@@ -3,7 +3,7 @@ kvm_host: localhost
 image_pool_dir: /var/lib/libvirt/images
 network:
   name: virbr-{{ cluster_name }}
-  domainName: "{{ cluster_name }}.local"
+  domain_name: "{{ cluster_name }}.local"
   cidr_address: "192.168.1.1/26"
   ipv4Address: 192.168.1.0
   ipv4_gateway: 192.168.1.1

@@ -1,9 +1,0 @@
-version: 2
-ethernets:
-  enp1s0:
-    dhcp4: false
-    dhcp6: false
-    addresses: [ {{ control_plane.ipv4 }} ]
-    gateway4: {{ network.ipv4_gateway }}
-    nameservers:
-      addresses: [ {{ network.ipv4_gateway }}, 1.1.1.1 ]
