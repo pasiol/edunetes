@@ -1,5 +1,6 @@
 .vscode
 .ssh
+.tf
 
 venv
 *_local*
