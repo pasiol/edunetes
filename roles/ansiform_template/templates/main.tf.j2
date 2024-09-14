@@ -1,0 +1,43 @@
+terraform {
+  backend "local" {
+  }
+  required_providers {
+    libvirt = {
+      source = "dmacvicar/libvirt"
+    }
+  }
+}
+
+provider "libvirt" {
+  uri = "qemu:///system"
+}
+
+# resource "libvirt_pool" "node_image" {
+#   name = "default"
+#   type = "dir"
+#   path = "{{ image_pool_dir }}"
+# }
+
+resource "libvirt_cloudinit_disk" "commoninit" {
+  name = "commoninit.iso"
+  pool = "default"
+  user_data = "${data.template_file.user_data.rendered}"
+}
+
+data "template_file" "user_data" {
+  template = file("${path.module}/cloud_init.cfg")
+}
+
+resource "libvirt_network" "virbr-edunetes" {
+  name      = "virbr-edunetes"
+  mode      = "nat"
+  domain    = "{{ network.domainName }}"
+  addresses = ["{{ network.cidr_address }}"]
+  dns {
+    enabled = true
+    local_only = true
+  }
+  dhcp {
+    enabled = false
+  }
+}

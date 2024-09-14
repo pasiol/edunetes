@@ -1,0 +1,7 @@
+---
+- name: Initialize terraform
+  become: true
+  community.general.terraform:
+    project_path: "{{ playbook_dir }}/.tf"
+    state: present
+    force_init: true

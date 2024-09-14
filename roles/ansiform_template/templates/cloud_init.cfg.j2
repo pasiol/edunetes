@@ -1,0 +1,20 @@
+#cloud-config
+packages_update: true
+packages_upgrade: true
+packages:
+  - vim
+hostname: edunetes-node
+manage_etc_hosts: true
+ssh_pwauth: false
+users:
+  - default
+  - name: kubeadmin
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    shell: "/bin/bash"
+    ssh-authorized-keys:
+      - {{ lookup('file', '{{ playbook_dir }}/.ssh/id_{{ cluster_name }}.pub') }}
+timezone: "{{ timezone }}"
+power_state:
+  delay: "+5"
+  mode: reboot
+  condition: true
