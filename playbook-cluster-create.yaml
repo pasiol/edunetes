@@ -1,0 +1,11 @@
+---
+- name: Create nodes for Edunetes K8S cluster
+  hosts: kvm_host_local
+  connection: local
+  roles:
+    - role: kvm_ansiform_template
+      when: ansiform
+    - role: kvm_ansiform_plan
+      when: ansiform
+    - role: kvm_ansiform_apply
+      when: ansiform

@@ -5,12 +5,13 @@ Run the latest release of Vanilla Kubernetes on your Linux laptop.
 ## Cluster configuration
 
 [Configuration](group_vars/all/main.yaml)
+[Configuration](group_vars/all/nodes.yaml)
 
 ## Nodes
 
 Ansible playbook, which creates KVM-based Ubuntu 22.04 virtual machine nodes
 
-    ansible-playbook playbook-kvm-nodes-create.yaml -c local -K
+    ansible-playbook playbook-cluster-create.yaml -c local -K
 
 ## Cluster configuration
 
@@ -20,6 +21,10 @@ Configure a Kubernetes cluster on the nodes.
     ansible-playbook playbook-cluster-nodes-control-node-set-up.yaml --private-key=.ssh/id_edunetes -u kubeadmin
     ansible-playbook playbook-cluster-nodes-workers-join.yaml --private-key=.ssh/id_edunetes -u kubeadmin
     ansible-playbook playbook-cluster-finalize.yaml --private-key=.ssh/id_edunetes -u kubeadmin
+
+## Removing cluster
+
+    ansible-playbook -i inventory.yaml playbook-cluster-destroy.yaml -K
 
 ## Requirements
 
