@@ -1,0 +1,14 @@
+---
+- name: Ensure .tf-directory
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/.tf"
+    state: directory
+    mode: "0755"
+
+- name: Loop templates
+  with_fileglob:
+    - "{{ role_path }}/templates/*.j2"
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ playbook_dir }}/.tf/{{ item | split('/') | last | replace('.j2', '') }}"
+    mode: "0644"

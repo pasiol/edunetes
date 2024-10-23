@@ -1,0 +1,7 @@
+---
+- name: Destroy nodes
+  hosts: kvm_host_local
+  connection: local
+  roles:
+    - role: kvm_ansiform_destroy
+      when: ansiform

@@ -1,13 +1,16 @@
 ---
 kvm_host: localhost
+ansiform: true
 image_pool_dir: /var/lib/libvirt/images
 network:
-  domainName: "{{ cluster_name }}.local"
-  ipv4Address: 192.168.1.0
-  ipv4_gateway: 192.168.1.1
-  ipv4_mask: 255.255.255.192
-  lb_address_pool: "192.168.1.30-192.168.1.50"
-kubernetes_package_version: 1.30.4-1.1
+  name: virbr-{{ cluster_name }}
+  domain_name: "{{ cluster_name }}.local"
+  cidr_address: "172.16.254.0/24"
+  ipv4Address: 172.16.254.0
+  ipv4_gateway: 172.16.254.1
+  ipv4_mask: 255.255.255.0
+  lb_address_pool: "172.16.254.200-172.16.254.254"
+kubernetes_package_version: 1.30.6-1.1
 kubernetes_package_version_splitted: "{{ kubernetes_package_version | split('.') | list }}"
 kubernetes_minor_version: >-
   {{
@@ -22,48 +25,8 @@ timezone: Europe/Helsinki
 options:
   headlamp:
     enabled: true
-    ipv4: 192.168.1.50
-storage_pools:
-  - pool:
-      name: pool1
-      path: /var/lib/libvirt/filesystems/pool1
-  - pool:
-      name: pool2
-      path: /var/lib/libvirt/filesystems/pool2
-  - pool:
-      name: pool3
-      path: /var/lib/libvirt/filesystems/pool3
-base_image_checksum: # updated 2023-07-29
-  sha256:eca0892c767124069b3b73a85f597d9062ac5dfea49ff09845206db5bc675195
-base_image_name: jammy-server-cloudimg-amd64-disk-kvm.img
-base_image_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img
-control_planes:
-  - disk_size: 30G
-    ipv4: 192.168.1.11/26
-    name: control-plane
-    network_name: virbr-{{ cluster_name }}
-    pool_home: /var/lib/libvirt/filesystems/control-plane
-    ram_mb: 4096
-    vcpus: 2
-workers:
-  - disk_size: 30G
-    ipv4: 192.168.1.21/26
-    name: worker01
-    network_name: virbr-{{ cluster_name }}
-    pool_home: /var/lib/libvirt/filesystems/worker01
-    ram_mb: 4096
-    vcpus: 2
-  - disk_size: 30G
-    ipv4: 192.168.1.22/26
-    name: worker02
-    network_name: virbr-{{ cluster_name }}
-    pool_home: /var/lib/libvirt/filesystems/worker02
-    ram_mb: 4096
-    vcpus: 2
-  - disk_size: 30G
-    ipv4: 192.168.1.23/26
-    name: worker03
-    network_name: virbr-{{ cluster_name }}
-    pool_home: /var/lib/libvirt/filesystems/worker03
-    ram_mb: 4096
-    vcpus: 2
+    ipv4: 172.16.254.254
+base_image_checksum: # updated 2024-09-14
+  sha256:5da0b3d37d02ca6c6760caa4041b4df14e08abc7bc9b2db39133eef8ee145f6d
+base_image_name: jammy-server-cloudimg-amd64.img
+base_image_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img

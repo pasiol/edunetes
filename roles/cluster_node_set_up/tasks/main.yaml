@@ -1,4 +1,10 @@
 ---
+- name: Set hostname
+  become: true
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}.{{ network.domain_name }}"
+    use: systemd
+
 - name: Update packages # TODO: Create own role for upgrade
   become: true
   register: result
@@ -24,8 +30,7 @@
 
 - name: Include task hosts file
   with_items:
-    - "{{ control_planes }}"
-    - "{{ workers }}"
+    - "{{ nodes }}"
   ansible.builtin.include_tasks:
     file: hosts_file.yaml
 

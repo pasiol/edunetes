@@ -1,0 +1,9 @@
+---
+- name: Plan terraform
+  become: true
+  community.general.terraform:
+    project_path: "{{ playbook_dir }}/.tf"
+    lock: true
+    state: planned
+    plan_file: edunetes-plan
+    force_init: true

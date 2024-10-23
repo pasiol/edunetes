@@ -1,0 +1,58 @@
+resource "libvirt_volume" "node_volumes" {
+  for_each = {
+    for node_key, node in local.cluster["nodes"] :
+    "${node.name}" => node
+  }
+
+  name   = "${each.value.name}.qcow2"
+  base_volume_name = "{{ base_image_name }}"
+  base_volume_pool ="default"
+  pool   = "default"
+
+  size = "${each.value.disk_size_in_gb}"*1024*1024*1024
+}
+
+resource "libvirt_domain" "node" {
+  for_each = { for node in local.cluster["nodes"] : node.name => node }
+
+    name    = each.value.name
+    vcpu    = each.value.vcpus
+    memory  = each.value.ram_mb
+
+    cpu {
+      mode = "host-passthrough"
+    }
+
+    network_interface {
+      network_name  = "virbr-edunetes"
+      network_id      = libvirt_network.virbr-edunetes.id
+      hostname        = each.value.name
+      addresses       = [each.value.ipv4]
+      wait_for_lease = false
+    }
+
+    disk {
+      volume_id =  libvirt_volume.node_volumes[each.key].id
+      scsi      = true
+    }
+
+    cloudinit = "${libvirt_cloudinit_disk.commoninit.id}"
+
+    console {
+      type = "pty"
+      target_type = "serial"
+      target_port = "0"
+    }
+
+    console {
+      type = "pty"
+      target_type = "virtio"
+      target_port = "1"
+    }
+
+    graphics {
+      type = "spice"
+      listen_type = "address"
+      autoport = true
+    }
+}

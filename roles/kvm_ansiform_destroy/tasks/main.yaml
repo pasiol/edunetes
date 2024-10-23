@@ -1,0 +1,7 @@
+---
+- name: Destroy terraform
+  become: true
+  community.general.terraform:
+    project_path: "{{ playbook_dir }}/.tf"
+    state: absent
+    force_init: true

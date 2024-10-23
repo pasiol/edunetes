@@ -1,0 +1,26 @@
+---
+nodes:
+  - name: control-plane-01
+    type: control-plane
+    disk_size_in_gb: 30
+    ipv4: 172.16.254.11
+    ram_mb: 4096
+    vcpus: 2
+  - name: worker-01
+    type: worker
+    disk_size_in_gb: 30
+    ipv4: 172.16.254.21
+    ram_mb: 4096
+    vcpus: 2
+  - name: worker-02
+    type: worker
+    disk_size_in_gb: 30
+    ipv4: 172.16.254.22
+    ram_mb: 4096
+    vcpus: 2
+  - name: worker-03
+    type: worker
+    disk_size_in_gb: 30
+    ipv4: 172.16.254.23
+    ram_mb: 4096
+    vcpus: 2
