@@ -5,10 +5,10 @@ kvm_host_set_up_packages:
   - virtinst
   - libvirt-daemon-system
   - libguestfs-tools
-  - python3-libvirt
+#  - python3-libvirt
   - cloud-image-utils
-  - python3-lxml
+# - python3-lxml
   - virtinst
-  - libvirt-dev
+#  - libvirt-dev
   - virt-manager
   - bash-completion

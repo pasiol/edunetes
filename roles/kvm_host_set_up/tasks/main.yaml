@@ -1,7 +1,6 @@
 ---
 - name: Include OS specific KVM packages
-  ansible.builtin.include_vars:
-    "{{ ansible_os_family | lower }}.yaml"
+  ansible.builtin.include_vars: "{{ ansible_os_family | lower }}.yaml"
 
 - name: Install KVM packages
   become: true
@@ -35,10 +34,17 @@
     backup: true
     backrefs: true
 
+- name: Set apparmor for image directory
+  become: true
+  ansible.builtin.lineinfile:
+    dest: /etc/apparmor.d/libvirt/TEMPLATE.qemu
+    insertafter: "#include <abstractions/libvirt-qemu>"
+    line: "  /var/lib/libvirt/images/** rwk,"
+    state: present
+
 - name: Include task hosts file
   with_items:
-    - "{{ control_planes }}"
-    - "{{ workers }}"
+    - "{{ nodes }}"
   ansible.builtin.include_tasks:
     file: hosts_file.yaml
 
@@ -69,23 +75,17 @@
     https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_major_version }}/deb/ /' |
     tee /etc/apt/sources.list.d/kubernetes.list
 
-- name: Unhold kubernetes packages # noqa command-instead-of-module
+- name: Remove kubectl package
   become: true
-  changed_when: true
-  ansible.builtin.command: >
-    apt-mark unhold kubectl
+  ansible.builtin.apt:
+    name: kubectl
+    state: absent
 
-- name: Install kubernetes packages to all nodes # TODO: remove other versions
+- name: Install kubectl
   become: true
   ansible.builtin.apt:
     update_cache: true
     name: "kubectl={{ kubernetes_package_version }}"
-
-- name: Hold kubernetes packages # noqa command-instead-of-module
-  become: true
-  changed_when: true
-  ansible.builtin.command: >
-    apt-mark hold kubectl
 
 - name: Set kubectl autocompletion
   ansible.builtin.lineinfile:

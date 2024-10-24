@@ -41,7 +41,23 @@ Prepare KVM host running the following commands.
     source venv/bin/activate
     pip install -r requirements.txt
     ansible-galaxy install -r requirements.yaml
-    ansible-playbook playbook-kvm-host-set-up.yaml -K
+    ansible-playbook playbook-kvm-host-set-up.yaml -K 
+
+Terraform provisioning may require apparmor modifications. Be careful with this.
+
+/etc/apparmor.d/libvirt/TEMPLATE.qemu 
+
+        #
+		# This profile is for the domain whose UUID matches this file.
+		#
+
+		#include <tunables/global>
+
+		profile LIBVIRT_TEMPLATE flags=(attach_disconnected) {
+			#include <abstractions/libvirt-qemu>
+			/var/lib/libvirt/images/** rwk,
+		}
+
 
 ## Features
 
