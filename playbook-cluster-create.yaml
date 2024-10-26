@@ -3,9 +3,6 @@
   hosts: kvm_host_local
   connection: local
   roles:
-    - role: kvm_ansiform_template
-      when: ansiform
-    - role: kvm_ansiform_plan
-      when: ansiform
-    - role: kvm_ansiform_apply
-      when: ansiform
+    - kvm_ansiform_template
+    - kvm_ansiform_plan
+    - kvm_ansiform_apply

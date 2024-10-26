@@ -1,4 +1,31 @@
 ---
+- name: Check is base image present
+  become: true
+  register: stat_result
+  ansible.builtin.stat:
+    path: "{{ image_pool_dir }}/{{ base_image_name }}"
+
+- name: Download base image
+  become_user: root
+  become: true
+  register: base_image
+  when: not stat_result.stat.exists
+  ansible.builtin.get_url:
+    url: "{{ base_image_url }}"
+    dest: "{{ image_pool_dir }}/{{ base_image_name }}"
+    checksum: "{{ base_image_checksum }}"
+    mode: "0700"
+
+- name: Ensure directory .ssh exists
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/.ssh"
+    state: directory
+    mode: '0700'
+
+- name: Generate an OpenSSH keypair
+  community.crypto.openssh_keypair:
+    path: "{{ playbook_dir }}/.ssh/id_{{ cluster_name }}"
+
 - name: Ensure .tf-directory
   ansible.builtin.file:
     path: "{{ playbook_dir }}/.tf"

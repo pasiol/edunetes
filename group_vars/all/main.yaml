@@ -1,6 +1,5 @@
 ---
 kvm_host: localhost
-ansiform: true
 image_pool_dir: /var/lib/libvirt/images
 network:
   name: virbr-{{ cluster_name }}
@@ -10,7 +9,7 @@ network:
   ipv4_gateway: 172.16.254.1
   ipv4_mask: 255.255.255.0
   lb_address_pool: "172.16.254.200-172.16.254.254"
-kubernetes_package_version: 1.30.6-1.1
+kubernetes_package_version: 1.31.2-1.1
 kubernetes_package_version_splitted: "{{ kubernetes_package_version | split('.') | list }}"
 kubernetes_minor_version: >-
   {{
@@ -26,7 +25,7 @@ options:
   headlamp:
     enabled: true
     ipv4: 172.16.254.254
-base_image_checksum: # updated 2024-09-14
-  sha256:5da0b3d37d02ca6c6760caa4041b4df14e08abc7bc9b2db39133eef8ee145f6d
+base_image_checksum: # updated 2024-10-26
+  sha256:55c687a9a242fab7b0ec89ac69f9def77696c4e160e6f640879a0b0031a08318
 base_image_name: jammy-server-cloudimg-amd64.img
 base_image_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
