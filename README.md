@@ -1,21 +1,34 @@
 # Edunetes - Kubernetes self-study environment on the Ubuntu 22.04 laptop
 
-Run the latest release of Vanilla Kubernetes on your Linux laptop.
+A light-weight Kubernetes distribution for educational purposes. Run the latest Vanilla Kubernetes on a single workstation or laptop.
 
-## Cluster configuration
+## Features
+
+- Vanilla Kubernetes from pkgs.k8s.io repository
+- Flannel or Calico CNI plugin
+- MetalLB loadbalander
+- one control plane and multiple worker nodes
+
+## Requirements
+
+- KVM host on Ubuntu 22.04
+- Python 3.10 virtual environment
+- modern multithread computer 16gb memory for 2 nodes, 32gb memory for 4 nodes
+
+## Cluster configuration files
 
 [Configuration](group_vars/all/main.yaml)
 [Configuration](group_vars/all/nodes.yaml)
 
-## Nodes
+## Nodes (Ubuntu 22.04)
 
-Ansible playbook, which creates KVM-based Ubuntu 22.04 virtual machine nodes
+Ansible playbook which creates KVM-based Ubuntu 22.04 nodes
 
     ansible-playbook playbook-cluster-create.yaml -c local -K
 
 ## Cluster configuration
 
-Configure a Kubernetes cluster on the nodes.
+Configure a Kubernetes cluster with following playbooks.
 
     ansible-playbook playbook-cluster-nodes-prepare.yaml --private-key=.ssh/id_edunetes -u kubeadmin
     ansible-playbook playbook-cluster-nodes-control-node-set-up.yaml --private-key=.ssh/id_edunetes -u kubeadmin
@@ -42,13 +55,7 @@ After configuration, you can check the status of the cluster and pods with the f
 
     ansible-playbook -i inventory.yaml playbook-cluster-destroy.yaml -K
 
-## Requirements
-
-- KVM host on Ubuntu 22.04
-- Python 3.10 virtual environment
-- modern multithread laptop 16gb memory for 2 nodes, 32gb memory for 4 nodes
-
-Prepare KVM host running the following commands.
+### Setting up KVM host
 
     ./set-up-ubuntu22.04-host.sh
     git clone https://github.com/pasiol/edunetes.git
@@ -58,6 +65,7 @@ Prepare KVM host running the following commands.
     pip install -r requirements.txt
     ansible-galaxy install -r requirements.yaml
     ansible-playbook playbook-kvm-host-set-up.yaml -K
+    sudo reboot
 
 Terraform provisioning may require apparmor modifications. Be careful with this.
 
@@ -73,13 +81,3 @@ Terraform provisioning may require apparmor modifications. Be careful with this.
 			#include <abstractions/libvirt-qemu>
 			/var/lib/libvirt/images/** rwk,
 		}
-
-
-## Features
-
-- Vanilla Kubernetes from pkgs.k8s.io repository
-- Flannel or Calico CNI plugin
-- MetalLB loadbalander
-- one control plane and multiple worker nodes
-
-Under development, on the Alpha stage

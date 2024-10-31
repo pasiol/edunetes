@@ -26,8 +26,15 @@ data "template_file" "user_data" {
   template = file("${path.module}/cloud_init.cfg")
 }
 
+resource "libvirt_pool" "default" {
+  name = "default"
+  type = "dir"
+  path = "/var/lib/libvirt/images"
+}
+
 resource "libvirt_network" "virbr-edunetes" {
   name      = "virbr-edunetes"
+  autostart = true
   mode      = "nat"
   domain    = "{{ network.domain_name }}"
   addresses = ["{{ network.cidr_address }}"]
