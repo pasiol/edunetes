@@ -28,6 +28,7 @@ data "template_file" "user_data" {
 
 resource "libvirt_network" "virbr-edunetes" {
   name      = "virbr-edunetes"
+  autostart = true
   mode      = "nat"
   domain    = "{{ network.domain_name }}"
   addresses = ["{{ network.cidr_address }}"]
