@@ -15,6 +15,8 @@ A light-weight Kubernetes distribution for educational purposes. Run the latest 
 - Python 3.10 virtual environment
 - modern multithread computer 16gb memory for 2 nodes, 32gb memory for 4 nodes
 
+[Setting up KVM host and installing Terraform](docs/SET-UP-KMV-HOST-UBUNTU-22.04.md)
+
 ## Cluster configuration files
 
 [Configuration](group_vars/all/main.yaml)
@@ -35,7 +37,7 @@ Configure a Kubernetes cluster with following playbooks.
     ansible-playbook playbook-cluster-nodes-workers-join.yaml --private-key=.ssh/id_edunetes -u kubeadmin
     ansible-playbook playbook-cluster-finalize.yaml --private-key=.ssh/id_edunetes -u kubeadmin
 
-After configuration, you can check the status of the cluster and pods with the following commands.
+After configuration, you can check the status of the cluster and pods with the following commands.Terraform provisioning may require apparmor modifications. Be careful with this.
 
     kubectl get nodes -o wide
     NAME                             STATUS   ROLES           AGE     VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
@@ -55,28 +57,3 @@ After configuration, you can check the status of the cluster and pods with the f
 
     ansible-playbook -i inventory.yaml playbook-cluster-destroy.yaml -K
 
-### Setting up KVM host
-
-    ./set-up-ubuntu22.04-host.sh
-    git clone https://github.com/pasiol/edunetes.git
-    cd edunetes
-    python3.10 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    ansible-galaxy install -r requirements.yaml
-    ansible-playbook playbook-kvm-host-set-up.yaml -K
-
-Terraform provisioning may require apparmor modifications. Be careful with this.
-
-/etc/apparmor.d/libvirt/TEMPLATE.qemu
-
-        #
-		# This profile is for the domain whose UUID matches this file.
-		#
-
-		#include <tunables/global>
-
-		profile LIBVIRT_TEMPLATE flags=(attach_disconnected) {
-			#include <abstractions/libvirt-qemu>
-			/var/lib/libvirt/images/** rwk,
-		}

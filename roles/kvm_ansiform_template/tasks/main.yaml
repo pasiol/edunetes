@@ -1,5 +1,6 @@
 ---
 - name: Check is base image present
+  become_user: root
   become: true
   register: stat_result
   ansible.builtin.stat:
