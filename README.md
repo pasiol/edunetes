@@ -56,3 +56,4 @@ After configuration, you can check the status of the cluster and pods with the f
 ## Removing cluster
 
     ansible-playbook -i inventory.yaml playbook-cluster-destroy.yaml -K
+
