@@ -16,20 +16,23 @@ locals {
   cluster = yamldecode(file("${path.module}/../group_vars/all/nodes.yaml"))
 }
 
+resource "libvirt_pool" "pool" {
+  name = "{{ cluster_name }}_pool"
+  type = "dir"
+  target {
+    path = "/var/lib/libvirt/images/{{ cluster_name }}_pool"
+  }
+}
+
 resource "libvirt_cloudinit_disk" "commoninit" {
+  depends_on = [libvirt_pool.pool]
   name = "commoninit.iso"
-  pool = "default"
+  pool = "{{ cluster_name }}_pool"
   user_data = "${data.template_file.user_data.rendered}"
 }
 
 data "template_file" "user_data" {
   template = file("${path.module}/cloud_init.cfg")
-}
-
-resource "libvirt_pool" "default" {
-  name = "default"
-  type = "dir"
-  path = "/var/lib/libvirt/images"
 }
 
 resource "libvirt_network" "virbr-edunetes" {
