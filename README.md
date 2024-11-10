@@ -37,7 +37,7 @@ Configure a Kubernetes cluster with following playbooks.
     ansible-playbook playbook-cluster-nodes-workers-join.yaml --private-key=.ssh/id_edunetes -u kubeadmin
     ansible-playbook playbook-cluster-finalize.yaml --private-key=.ssh/id_edunetes -u kubeadmin
 
-After configuration, you can check the status of the cluster and pods with the following commands.Terraform provisioning may require apparmor modifications. Be careful with this.
+After configuration, you can check the status of the cluster and pods with the following commands.
 
     kubectl get nodes -o wide
     NAME                             STATUS   ROLES           AGE     VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
@@ -56,4 +56,3 @@ After configuration, you can check the status of the cluster and pods with the f
 ## Removing cluster
 
     ansible-playbook -i inventory.yaml playbook-cluster-destroy.yaml -K
-
