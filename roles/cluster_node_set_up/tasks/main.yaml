@@ -34,7 +34,7 @@
   ansible.builtin.include_tasks:
     file: hosts_file.yaml
 
-- name: Disbale firewall is no need behind nat
+- name: Disable firewall is no need behind nat
   become: true
   community.general.ufw:
     state: disabled
