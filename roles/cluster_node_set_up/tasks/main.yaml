@@ -1,4 +1,17 @@
 ---
+- name: Sleep 2 minutes and wait vms to reboot
+  ansible.builtin.pause:
+    minutes: 2
+
+- name: Test SSH connection with retry
+  ansible.builtin.wait_for_connection:
+    timeout: 600
+    delay: 10
+    sleep: 10
+
+- name: Gather facts
+  ansible.builtin.setup:
+
 - name: Set hostname
   become: true
   ansible.builtin.hostname:
@@ -34,7 +47,7 @@
   ansible.builtin.include_tasks:
     file: hosts_file.yaml
 
-- name: Disbale firewall is no need behind nat
+- name: Disable firewall is no need behind nat
   become: true
   community.general.ufw:
     state: disabled

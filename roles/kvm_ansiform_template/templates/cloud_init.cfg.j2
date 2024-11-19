@@ -1,6 +1,6 @@
 #cloud-config
 packages_update: true
-packages_upgrade: true
+packages_upgrade: false
 packages:
   - vim
 hostname: edunetes-node
@@ -15,6 +15,6 @@ users:
       - {{ lookup('file', '{{ playbook_dir }}/.ssh/id_{{ cluster_name }}.pub') }}
 timezone: "{{ timezone }}"
 power_state:
-  delay: "+5"
+  delay: "+1"
   mode: reboot
   condition: true
