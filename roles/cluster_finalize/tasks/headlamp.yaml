@@ -2,7 +2,7 @@
 - name: Apply headlamp
   register: result
   until: result is not failed
-  retries: 10
+  retries: 25
   delay: 10
   kubernetes.core.k8s:
     state: present
