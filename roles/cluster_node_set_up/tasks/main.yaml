@@ -42,8 +42,6 @@
     name: "{{ item }}"
 
 - name: Include task hosts file
-  with_items:
-    - "{{ nodes }}"
   ansible.builtin.include_tasks:
     file: hosts_file.yaml
 
