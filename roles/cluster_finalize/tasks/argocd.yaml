@@ -1,0 +1,39 @@
+---
+- name: Create namespace for argocd
+  kubernetes.core.k8s:
+    state: present
+    api_version: v1
+    kind: Namespace
+    name: argocd
+
+- name: Apply argocd
+  register: result
+  until: result is not failed
+  retries: 10
+  delay: 20
+  kubernetes.core.k8s:
+    state: present
+    namespace: argocd
+    src: "{{ role_path }}/files/argocd-service.yaml"
+
+- name: Patch service type to LoadBalancer
+  kubernetes.core.k8s_json_patch:
+    kind: Service
+    namespace: argocd
+    name: argocd-server
+    patch:
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/annotations
+        value: {}
+      - op: add
+        path: /metadata/annotations/metallb.universe.tf~1address-pool
+        value: {}
+      - op: replace
+        path: /metadata/annotations/metallb.universe.tf~1address-pool
+        value: services-pool
+      - op: add
+        path: /spec/loadBalancerIP
+        value: "{{ options.argocd.ipv4 }}"
