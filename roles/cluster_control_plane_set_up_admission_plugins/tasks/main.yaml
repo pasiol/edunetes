@@ -3,13 +3,12 @@
   become: true
   register: result_admission_plugins
   changed_when: false
-  ansible.builtin.command: >
+  ansible.builtin.command:
     cat /etc/kubernetes/manifests/kube-apiserver.yaml
 
-- name: Set up first control plane
+- name: Enable admission plugins if missing
   become: true
   when: admission_plugins | join(',') not in result_admission_plugins.stdout
-  changed_when: true
   ansible.builtin.lineinfile:
     path: /etc/kubernetes/manifests/kube-apiserver.yaml
     regexp: '^(\s*- --enable-admission-plugins=).*$'
