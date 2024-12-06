@@ -18,17 +18,25 @@
     name: "{{ inventory_hostname }}.{{ network.domain_name }}"
     use: systemd
 
-- name: Update packages # TODO: Create own role for upgrade
+- name: Update packages
   become: true
   register: result
   until: result is not failed
   retries: 25
   delay: 10
-  ansible.builtin.apt:
-    name: "*"
-    update_cache: true
-    autoremove: true
-    only_upgrade: true
+  changed_when: true
+  ansible.builtin.command:
+    apt update
+
+- name: Upgrade packages
+  become: true
+  register: result
+  until: result is not failed
+  retries: 25
+  delay: 10
+  changed_when: true # TODO: fix it
+  ansible.builtin.command:
+    apt upgrade -y
 
 - name: Install common packages to all nodes
   become: true
@@ -238,3 +246,7 @@
   retries: 25
   delay: 10
   ansible.builtin.command: "kubeadm config images pull --kubernetes-version=v{{ kubernetes_minor_version }}"
+
+- name: Unconditionally reboot the machine with all defaults
+  become: true
+  ansible.builtin.reboot:

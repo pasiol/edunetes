@@ -1,4 +1,11 @@
 ---
+- name: Set up admission plugins
+  hosts: control_planes
+  roles:
+    - cluster_control_plane_set_up_admission_plugins
+  vars:
+    ansible_user: kubeadmin
+
 - name: Finalize cluster configuration
   hosts: kvm_host_local
   roles:
