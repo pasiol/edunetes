@@ -19,6 +19,8 @@ kubernetes_minor_version: >-
   }}
 kubernetes_major_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}"
 cni_plugin: calico
+admission_plugins:
+  - ResourceQuota
 cluster_name: edunetes
 timezone: Europe/Helsinki
 options:
