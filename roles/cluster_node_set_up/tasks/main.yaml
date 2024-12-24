@@ -22,7 +22,7 @@
   become: true
   register: result
   until: result is not failed
-  retries: 10
+  retries: 25
   delay: 10
   ansible.builtin.apt:
     name: "*"
@@ -34,7 +34,7 @@
   become: true
   register: result
   until: result is not failed
-  retries: 10
+  retries: 25
   delay: 10
   with_items:
     - "{{ cluster_node_set_up_kubernetes_node_packages }}"
@@ -166,7 +166,7 @@
   become: true
   register: result
   until: result is not failed
-  retries: 10
+  retries: 25
   delay: 10
   with_items:
     - "{{ cluster_node_set_up_kubernetes_node_kubernetes_packages }}"
@@ -186,7 +186,7 @@
   become: true
   register: result
   until: result is not failed
-  retries: 10
+  retries: 25
   delay: 10
   ansible.builtin.apt:
     name: containerd
@@ -235,6 +235,6 @@
   changed_when: true
   register: result
   until: result is not failed
-  retries: 10
+  retries: 25
   delay: 10
   ansible.builtin.command: "kubeadm config images pull --kubernetes-version=v{{ kubernetes_minor_version }}"

@@ -1,0 +1,28 @@
+---
+- name: Create nodes for edunetes cluster
+  gather_facts: false
+  hosts: edunetes
+  roles:
+    - cluster_node_set_up
+
+- name: Set up control plane(s)
+  hosts: control_planes
+  roles:
+    - cluster_control_plane_init
+  vars:
+    ansible_user: kubeadmin
+
+- name: Join worker(s) to cluster
+  hosts: workers
+  roles:
+    - cluster_workers_join
+  vars:
+    ansible_user: kubeadmin
+
+- name: Finalize cluster configuration
+  hosts: kvm_host_local
+  roles:
+    - cluster_finalize
+  connection: local
+  vars:
+    ansible_user: kubeadmin

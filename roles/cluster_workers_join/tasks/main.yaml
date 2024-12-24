@@ -13,7 +13,7 @@
 - name: Set fact join command
   register: result
   until: result is not failed
-  retries: 10
+  retries: 25
   delay: 10
   ansible.builtin.set_fact:
     cluster_workers_join_command: /usr/bin/{{ result.stdout }}
@@ -23,7 +23,7 @@
   changed_when: true
   register: result
   until: result is not failed
-  retries: 10
+  retries: 25
   delay: 10
   ansible.builtin.command:
     cmd: >
