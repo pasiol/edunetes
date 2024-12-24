@@ -3,11 +3,9 @@ packages_update: true
 packages_upgrade: false
 packages:
   - vim
-hostname: edunetes-node
-manage_etc_hosts: true
+manage_etc_hosts: false
 ssh_pwauth: false
 users:
-  - default
   - name: kubeadmin
     sudo: "ALL=(ALL) NOPASSWD:ALL"
     shell: "/bin/bash"

@@ -1,5 +1,6 @@
 ---
 - name: Create nodes for edunetes cluster
+  gather_facts: false
   hosts: edunetes
   roles:
     - cluster_node_set_up

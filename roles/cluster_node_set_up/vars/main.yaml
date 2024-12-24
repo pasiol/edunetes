@@ -6,6 +6,7 @@ cluster_node_set_up_kubernetes_node_packages:
   - software-properties-common
   - apt-transport-https
   - ca-certificates
+  - python3
 
 cluster_node_set_up_kubernetes_node_kubernetes_packages:
   - kubelet
