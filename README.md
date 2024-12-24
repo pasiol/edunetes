@@ -9,6 +9,11 @@ A light-weight Kubernetes distribution for educational purposes. Run the latest 
 - MetalLB loadbalander
 - one control plane and multiple worker nodes
 
+### Options
+
+- Headlamp
+- ArgoCD
+
 ## Requirements
 
 - KVM host on Ubuntu 22.04

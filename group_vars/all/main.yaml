@@ -25,6 +25,9 @@ options:
   headlamp:
     enabled: true
     ipv4: 172.16.254.254
+  argocd:
+    enabled: true
+    ipv4: 172.16.254.253
 base_image_checksum: # updated 2024-10-26
   sha256:55c687a9a242fab7b0ec89ac69f9def77696c4e160e6f640879a0b0031a08318
 base_image_name: jammy-server-cloudimg-amd64.img

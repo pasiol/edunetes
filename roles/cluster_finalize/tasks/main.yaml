@@ -47,3 +47,8 @@
   when: options.headlamp
   ansible.builtin.include_tasks:
     file: headlamp.yaml
+
+- name: Iclude task ArgoCD
+  when: options.argocd
+  ansible.builtin.include_tasks:
+    file: argocd.yaml
