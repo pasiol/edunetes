@@ -7,10 +7,6 @@ all:
       ansible_host: 172.16.254.11
     worker01:
       ansible_host: 172.16.254.21
-    worker02:
-      ansible_host: 172.16.254.22
-    worker03:
-      ansible_host: 172.16.254.23
   children:
     kvm:
       hosts:
@@ -19,13 +15,9 @@ all:
       hosts:
         control-plane01:
         worker01:
-        worker02:
-        worker03:
     control_planes:
       hosts:
         control-plane01:
     workers:
       hosts:
         worker01:
-        worker02:
-        worker03:
