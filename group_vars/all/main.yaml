@@ -9,7 +9,7 @@ network:
   ipv4_gateway: 172.16.254.1
   ipv4_mask: 255.255.255.0
   lb_address_pool: "172.16.254.200-172.16.254.254"
-kubernetes_package_version: 1.31.2-1.1
+kubernetes_package_version: 1.31.4-1.1
 kubernetes_package_version_splitted: "{{ kubernetes_package_version | split('.') | list }}"
 kubernetes_minor_version: >-
   {{
@@ -19,6 +19,9 @@ kubernetes_minor_version: >-
   }}
 kubernetes_major_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}"
 cni_plugin: calico
+admission_plugins:
+  - NodeRestriction
+  - ResourceQuota
 cluster_name: edunetes
 timezone: Europe/Helsinki
 options:
