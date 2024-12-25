@@ -5,4 +5,15 @@
     lock: false
     project_path: "{{ playbook_dir }}/.tf"
     state: absent
-    force_init: true
+
+- name: Remove KVM pool
+  become: true
+  ansible.builtin.file:
+    state: absent
+    path: "/var/lib/libvirt/images/{{ cluster_name }}"
+
+- name: Remove .tf directory
+  become: true
+  ansible.builtin.file:
+    state: absent
+    path: "{{ playbook_dir }}/.tf"
