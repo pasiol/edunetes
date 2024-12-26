@@ -44,3 +44,9 @@
   ansible.builtin.file:
     path: /tmp/helm-signing.asc
     state: absent
+
+- name: Add autocompletion for helm
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: source <(helm completion bash)
+    state: present
