@@ -1,0 +1,4 @@
+---
+- name: Include task ingress controller
+  ansible.builtin.include_tasks:
+    file: "{{ ingress_controller | lower }}.yaml"

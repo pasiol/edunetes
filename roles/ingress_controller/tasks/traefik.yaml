@@ -1,0 +1,26 @@
+---
+- name: Add traefik repo
+  kubernetes.core.helm_repository:
+    name: traefik
+    repo_url: "https://traefik.github.io/charts"
+
+- name: Copy values ansible host
+  ansible.builtin.copy:
+    src: traefik_values.yaml
+    dest: /tmp/traefik_values.yaml
+    mode: "0755"
+
+- name: Deploy traefik
+  kubernetes.core.helm:
+    name: traefik
+    state: present
+    chart_ref: traefik/traefik
+    release_namespace: traefik-v2
+    create_namespace: true
+    values_files:
+      - /tmp/traefik_values.yaml
+
+- name: Remove values file
+  ansible.builtin.file:
+    path: /tmp/traefik_values.yaml
+    state: absent
