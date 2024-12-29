@@ -19,7 +19,7 @@ kubernetes_minor_version: >-
   }}
 kubernetes_major_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}"
 cni_plugin: calico
-ingress_controller: nginx
+ingress_controller: haproxy
 admission_plugins:
   - NodeRestriction
   - ResourceQuota
@@ -32,6 +32,9 @@ options:
   argocd:
     enabled: true
     ipv4: 172.16.254.253
+  haproxy:
+    enabled: true
+    ipv4: 172.16.254.252
 base_image_checksum: # updated 2024-10-26
   sha256:55c687a9a242fab7b0ec89ac69f9def77696c4e160e6f640879a0b0031a08318
 base_image_name: jammy-server-cloudimg-amd64.img
