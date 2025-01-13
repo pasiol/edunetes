@@ -1,0 +1,52 @@
+---
+- name: Copy the helm signing key to node
+  ansible.builtin.copy:
+    src: helm-signing.asc
+    dest: /tmp/helm-signing.asc
+    mode: '0644'
+
+- name: Import Helm GPG key
+  become: true
+  changed_when: true
+  args:
+    executable: /bin/bash
+  ansible.builtin.shell: |
+    set -o pipefail
+    cat /tmp/helm-signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
+
+- name: Install apt-transport-https
+  become: true
+  ansible.builtin.apt:
+    name: apt-transport-https
+    state: present
+    update_cache: true
+
+- name: Add Helm repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/helm.gpg]
+      https://baltocdn.com/helm/stable/debian/ all main"
+    state: present
+    filename: helm-stable-debian
+
+- name: Update apt cache
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install Helm
+  become: true
+  ansible.builtin.apt:
+    name: helm
+    state: present
+
+- name: Clean up temporary files
+  ansible.builtin.file:
+    path: /tmp/helm-signing.asc
+    state: absent
+
+- name: Add autocompletion for helm
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: source <(helm completion bash)
+    state: present
