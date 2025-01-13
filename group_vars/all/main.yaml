@@ -19,6 +19,7 @@ kubernetes_minor_version: >-
   }}
 kubernetes_major_version: "{{ kubernetes_package_version_splitted[0] }}.{{ kubernetes_package_version_splitted[1] }}"
 cni_plugin: calico
+ingress_controller: haproxy
 admission_plugins:
   - NodeRestriction
   - ResourceQuota

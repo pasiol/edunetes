@@ -23,6 +23,7 @@
   hosts: control_planes
   roles:
     - cluster_control_plane_set_up_admission_plugins
+    - ingress_controller
   vars:
     ansible_user: kubeadmin
 

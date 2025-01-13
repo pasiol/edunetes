@@ -91,17 +91,5 @@
   ansible.builtin.lineinfile:
     path: ~/.bashrc
     state: present
-    line: "source <(kubectl completion bash)"
-
-- name: Set up k alias
-  ansible.builtin.lineinfile:
-    dest: ~/.bashrc
-    line: "alias k=kubectl"
-    state: present
-
-- name: Set up k alias autocompletion
-  ansible.builtin.lineinfile:
-    dest: ~/.bashrc
-    insertafter: "alias k=kubectl"
-    line: "complete -o default -F __start_kubectl k"
-    state: present
+    regexp: "^source <(kubectl completion bash)"
+    line: source <(kubectl completion bash)

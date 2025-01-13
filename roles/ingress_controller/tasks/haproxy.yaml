@@ -1,0 +1,27 @@
+---
+- name: Add haproxy repo
+  kubernetes.core.helm_repository:
+    name: haproxytech
+    repo_url: "https://haproxytech.github.io/helm-charts"
+
+- name: Copy values ansible host
+  ansible.builtin.copy:
+    src: haproxy_values.yaml
+    dest: /tmp/haproxy_values.yaml
+    mode: "0755"
+
+- name: Deploy haproxy
+  kubernetes.core.helm:
+    name: haproxy-kubernetes-ingress
+    state: present
+    chart_ref: haproxytech/kubernetes-ingress
+    release_namespace: haproxy-controller
+    create_namespace: true
+    values_files:
+      - /tmp/haproxy_values.yaml
+
+- name: Remove values file
+
+  ansible.builtin.file:
+    path: /tmp/haproxy_values.yaml
+    state: absent

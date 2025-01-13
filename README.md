@@ -7,6 +7,7 @@ A light-weight Kubernetes distribution for educational purposes. Run the latest 
 - Vanilla Kubernetes from pkgs.k8s.io repository
 - Flannel or Calico CNI plugin
 - MetalLB loadbalander
+- Ingress controller Traefik, Nginx or HAProxy
 - one control plane and multiple worker nodes
 
 ### Options
