@@ -24,68 +24,15 @@
     regexp: ^vm.swappiness
     state: present
 
-- name: Enable IOMMU
-  become: true
-  notify: Grub mkconfig
-  ansible.builtin.lineinfile:
-    path: /etc/default/grub
-    regexp: '^GRUB_CMDLINE_LINUX="((?:(?!intel_iommu=on).)*?)"$'
-    line: 'GRUB_CMDLINE_LINUX="\1 intel_iommu=on"'
-    backup: true
-    backrefs: true
-
-- name: Set apparmor for image directory
-  become: true
-  ansible.builtin.lineinfile:
-    dest: /etc/apparmor.d/libvirt/TEMPLATE.qemu
-    insertafter: "#include <abstractions/libvirt-qemu>"
-    line: "  /var/lib/libvirt/images/** rwk,"
-    state: present
-
-- name: Include task hosts file
-  with_items:
-    - "{{ nodes }}"
+- name: Include task rhel9.yaml if distribution Red Hat and version is 9
   ansible.builtin.include_tasks:
-    file: hosts_file.yaml
+    file: rhel9.yaml
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version == "9"
 
-- name: Ansible check file exists
-  register: key
-  ansible.builtin.stat:
-    path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-
-- name: Get release key # noqa risky-shell-pipe command-instead-of-module
-  become: true
-  changed_when: true
-  when: "not key.stat.exists"
-  ansible.builtin.shell: |
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_major_version }}/deb/Release.key |
-    gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-
-- name: Ansible check file exists
-  register: source
-  ansible.builtin.stat:
-    path: /etc/apt/sources.list.d/kubernetes.list
-
-- name: Add repository # noqa risky-shell-pipe command-instead-of-module
-  become: true
-  changed_when: true
-  when: "not source.stat.exists"
-  ansible.builtin.shell: >-
-    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg]
-    https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_major_version }}/deb/ /' |
-    tee /etc/apt/sources.list.d/kubernetes.list
-
-- name: Remove kubectl package
-  become: true
-  ansible.builtin.apt:
-    name: kubectl
-    state: absent
-
-- name: Install kubectl
-  become: true
-  ansible.builtin.apt:
-    update_cache: true
-    name: "kubectl={{ kubernetes_package_version }}"
+- name: Include task ubuntu2204.yaml if distribution Ubuntu and version is 22.04
+  ansible.builtin.include_tasks:
+    file: ubuntu2204.yaml
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
 
 - name: Set kubectl autocompletion
   ansible.builtin.lineinfile:

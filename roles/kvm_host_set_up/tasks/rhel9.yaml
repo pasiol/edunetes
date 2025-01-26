@@ -1,0 +1,61 @@
+---
+- name: Run command virt-host-validate and register result
+  ansible.builtin.command:
+    cmd: virt-host-validate
+  become: true
+  register: _result
+  changed_when: _result.rc == 0
+
+- name: Notify VT-d setting
+  ansible.builtin.debug:
+    msg: "Enable VT-d on BIOS"
+  when: "'No ACPI DMAR table found' in _result.stdout"
+
+- name: Enable iommu
+  ansible.builtin.command:
+    cmd: grubby --update-kernel=ALL --args="intel_iommu=on iommu=pt"
+  become: true
+  register: _grubby
+  changed_when: _grubby.rc == 0
+  when: "'IOMMU either disabled in BIOS or not supported by this hardware platform' in _result.stdout"
+
+- name: Update grub
+  ansible.builtin.command:
+    cmd: grub2-mkconfig -o /boot/grub2/grub.cfg
+  become: true
+  register: _grub
+  changed_when: _grub.rc == 0
+
+- name: Reboot host
+  ansible.builtin.reboot:
+  become: true
+  when: "'IOMMU either disabled in BIOS or not supported by this hardware platform' in _result.stdout and _grub.rc == 0"
+
+- name: Run command virt-host-validate and register result
+  ansible.builtin.command:
+    cmd: virt-host-validate
+  become: true
+  register: _result
+  changed_when: _result.rc == 0
+
+- name: Remove kubectl package
+  become: true
+  ansible.builtin.package:
+    name: kubectl
+    state: absent
+
+- name: Template kubernetes repo file
+  become: true
+  ansible.builtin.template:
+    src: kubernetes_dnf_repository.j2
+    dest: /etc/yum.repos.d/kubernetes.repo
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Install kubectl
+  become: true
+  ansible.builtin.package:
+    update_cache: true
+    name: kubectl
+    state: present
