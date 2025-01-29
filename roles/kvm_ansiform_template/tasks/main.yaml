@@ -6,12 +6,37 @@
   changed_when: false
   ansible.builtin.command:
     cmd: virsh pool-list --all
+  environment:
+    LANG: C
 
 - name: Extract default pool line
   changed_when: false
   ansible.builtin.set_fact:
-    default_pool_line: "{{ pool_list_result.stdout_lines | select('search', 'default') | list | first }}"
-  when: pool_list_result.stdout_lines | select('search', 'default') | list | length > 0
+    default_pool_line: "{{ pool_list_result.stdout_lines | select('search', 'default') | list }}"
+
+- name: Create libvirt default pool
+  become_user: root
+  become: true
+  when: default_pool_line | list | length == 0
+  changed_when: true
+  ansible.builtin.command:
+    cmd: virsh pool-define-as --name default --type dir --target /var/lib/libvirt/images
+
+- name: Start libvirt default pool
+  become_user: root
+  become: true
+  when: default_pool_line | list | length == 0
+  changed_when: true
+  ansible.builtin.command:
+    cmd: virsh pool-start default
+
+- name: Autostart libvirt default pool
+  become_user: root
+  become: true
+  when: default_pool_line | list | length == 0
+  changed_when: true
+  ansible.builtin.command:
+    cmd: virsh pool-autostart default
 
 - name: Activate libvirt default pool
   become_user: root

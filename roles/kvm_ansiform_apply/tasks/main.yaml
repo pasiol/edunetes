@@ -3,7 +3,8 @@
   become_user: root
   become: true
   community.general.terraform:
-    lock: false
     project_path: "{{ playbook_dir }}/.tf"
     state: present
     force_init: true
+  environment:
+    LANG: C

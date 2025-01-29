@@ -52,3 +52,9 @@
     insertafter: "alias k=kubectl"
     line: "complete -o default -F __start_kubectl k"
     state: present
+
+- name: Include task hosts file
+  with_items:
+    - "{{ nodes }}"
+  ansible.builtin.include_tasks:
+    file: hosts_file.yaml
