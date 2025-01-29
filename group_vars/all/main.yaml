@@ -31,7 +31,7 @@ options:
   argocd:
     enabled: true
     ipv4: 172.16.254.253
-base_image_checksum: # updated 2024-10-26
-  sha256:55c687a9a242fab7b0ec89ac69f9def77696c4e160e6f640879a0b0031a08318
+base_image_checksum: # updated 2025-01-29
+  sha256:dcc6b52c52e309edbeca2d542c8800a8f9a14f355d71b172cbb83d79ca050d55
 base_image_name: jammy-server-cloudimg-amd64.img
 base_image_url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
