@@ -52,8 +52,6 @@ resource "libvirt_domain" "node" {
     }
 
     graphics {
-      type = "spice"
-      listen_type = "address"
-      autoport = true
+      type = "vnc"
     }
 }
