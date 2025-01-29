@@ -1,0 +1,29 @@
+---
+
+- name: Install rpm package yum-utils
+  become: true
+  ansible.builtin.package:
+    name: yum-utils
+    state: present
+
+- name: Add repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  become: true
+  ansible.builtin.get_url:
+    url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+    dest: /etc/yum.repos.d/hashicorp.repo
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Install package terraform
+  become: true
+  ansible.builtin.package:
+    name: terraform
+    state: present
+
+- name: Enable terraform completion
+  become: true
+  ansible.builtin.command:
+    cmd: terraform -install-autocomplete
+  args:
+    creates: /etc/bash_completion.d/terraform

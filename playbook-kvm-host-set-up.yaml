@@ -3,4 +3,5 @@
   hosts: kvm_host_local
   roles:
     - kvm_host_set_up
+    - terraform_install
   connection: local
